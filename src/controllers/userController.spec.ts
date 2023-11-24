@@ -1,7 +1,7 @@
 import mssql from "mssql";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { registerUser, userLogin } from "../controllers/userController";
+import { registerUser, userLogin,updateUser,deleteUser,getOneUser } from "../controllers/userController";
 
 const res: any = {
   status: jest.fn().mockReturnThis(),
@@ -16,8 +16,8 @@ describe("Test for user controllers", () => {
         firstName: "Jennifer",
         lastName: "Sammy",
         jituEmail: "jennifer.sammy@thejitu.com",
-        userCohort: "17",
-        password: "Mahu12#34",
+        userCohort: "1",
+        password: "12345678",
       };
       const req: any = {
         body: mockUser,
@@ -43,8 +43,8 @@ describe("Test for user controllers", () => {
         firstName: "lugybfyt",
         lastName: "uygtrtg",
         jituEmail: "jennifer.sammy@thejitu.com",
-        userCohort: "17",
-        password: "Mahu12#34",
+        userCohort: "1",
+        password: "12345678",
       };
       const req: any = {
         body: mockUser,
@@ -70,17 +70,17 @@ describe("Test for user controllers", () => {
   describe("Testing user Login Controller", () => {
     it("Should allow a user to Login and return a token", async () => {
       const user: any = {
-        id: "876r6gy765g5g6",
+        id: "52d902f3-aecd-417c-b79d-22a93fa4355b",
         firstName: "Jennifer",
         lastName: "Sammy",
         jituEmail: "jennifer.sammy@thejitu.com",
-        userCohort: "7",
-        password: "9875y7nh348b34b",
+        userCohort: "1",
+        password: "12345678",
       };
 
       const req: any = {
         body: {
-          jituEmail: "jennifer@thejitu.com",
+          jituEmail: "jennifer.Sammy@thejitu.com",
           password: "12345678",
         },
       };
@@ -107,6 +107,144 @@ describe("Test for user controllers", () => {
         message: "Logged in",
         token: "mockedToken",
       });
+    });
+  });
+});
+describe("User Controller Tests", () => {
+  let req: any;
+  let res: any;
+
+  beforeEach(() => {
+    req = {
+      params: {},
+      body: {},
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+  });
+
+  describe("updateUser", () => {
+    it("should update a user successfully", async () => {
+      jest.spyOn(mssql, "connect").mockResolvedValueOnce({
+        request: jest.fn().mockReturnThis(),
+        input: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValueOnce({
+          rowsAffected: 1,
+        }),
+      } as never);
+
+      req.params.id = "123";
+      req.body = {
+        firstName: "UpdatedFirstName",
+        lastName: "UpdatedLastName",
+        jituEmail: "updated.email@example.com",
+        userCohort: "2",
+      };
+
+      await updateUser(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "User updated successfully",
+      });
+    });
+
+    it("should handle update error", async () => {
+      jest.spyOn(mssql, "connect").mockResolvedValueOnce({
+        request: jest.fn().mockReturnThis(),
+        input: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValueOnce({
+          rowsAffected: 0,
+        }),
+      } as never);
+
+      req.params.id = "123";
+      req.body = {
+        firstName: "UpdatedFirstName",
+        lastName: "UpdatedLastName",
+        jituEmail: "updated.email@example.com",
+        userCohort: "2",
+      };
+
+      await updateUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: expect.anything() });
+    });
+  });
+
+  describe("deleteUser", () => {
+    it("should delete a user successfully", async () => {
+      jest.spyOn(mssql, "connect").mockResolvedValueOnce({
+        request: jest.fn().mockReturnThis(),
+        input: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValueOnce({
+          rowsAffected: 1,
+        }),
+      } as never);
+
+      req.params.id = "123";
+
+      await deleteUser(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "User deleted successfully",
+      });
+    });
+
+    it("should handle delete error", async () => {
+      jest.spyOn(mssql, "connect").mockResolvedValueOnce({
+        request: jest.fn().mockReturnThis(),
+        input: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValueOnce({
+          rowsAffected: 0,
+        }),
+      } as never);
+
+      req.params.id = "123";
+
+      await deleteUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: expect.anything() });
+    });
+  });
+
+  describe("getOneUser", () => {
+    it("should get one user successfully", async () => {
+      jest.spyOn(mssql, "connect").mockResolvedValueOnce({
+        request: jest.fn().mockReturnThis(),
+        input: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValueOnce({
+          recordset: [{ id: "123", firstName: "John" }],
+        }),
+      } as never);
+
+      req.params.id = "123";
+
+      await getOneUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        member: [{ id: "123", firstName: "John" }],
+      });
+    });
+
+    it("should handle getOneUser error", async () => {
+      jest.spyOn(mssql, "connect").mockResolvedValueOnce({
+        request: jest.fn().mockReturnThis(),
+        input: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockRejectedValueOnce(new Error("Database Error")),
+      } as never);
+
+      req.params.id = "123";
+
+      await getOneUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: expect.anything() });
     });
   });
 });
