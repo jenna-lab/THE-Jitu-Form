@@ -94,4 +94,74 @@ const userLogin = async (req: Request, res: Response) => {
   }
 };
 
-export { registerUser, userLogin };
+ const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    let { firstName, lastName, jituEmail, password, userCohort } = req.body;
+
+    const pool = await mssql.connect(sqlConfig);
+
+    const result = await pool
+      .request()
+      .input("id", mssql.VarChar, id)
+      .input("firstName", mssql.VarChar, firstName)
+      .input("lastName", mssql.VarChar, lastName)
+      .input("jituEmail", mssql.VarChar, jituEmail)
+      .input("userCohort", mssql.VarChar, userCohort)
+
+      .execute("updateUser");
+
+    console.log(result);
+
+    return res.json({ message: "User updated successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+    });
+  }
+};
+
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    let { id } = req.params;
+
+    const pool = await mssql.connect(sqlConfig);
+
+    const result = await pool
+      .request()
+      .input("id", mssql.VarChar, id)
+      .execute("deleteUser");
+
+    console.log(result);
+
+    return res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+    });
+  }
+};
+
+const getOneUser = async (req: Request, res: Response) => {
+  try {
+    console.log(req.params);
+
+    let id = req.params.id;
+
+    const pool = await mssql.connect(sqlConfig);
+
+    let member = (
+      await pool.request().input("id", id).execute("getOneUser")
+    ).recordset;
+
+    return res.status(200).json({
+      member: member,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error,
+    });
+  }
+};
+
+export { registerUser, userLogin, updateUser, deleteUser, getOneUser };

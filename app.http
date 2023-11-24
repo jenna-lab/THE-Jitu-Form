@@ -7,9 +7,25 @@ Content-Type: application/json
     "firstName":"Jennifer",
     "lastName":"Sammy",
     "jituEmail":"jennifer.sammy@thejitu.com",
-    "userCohort":"1",
+    "userCohort":"2",
     "password":"12345678"
 }
+
+# {
+#     "firstName":"sammy",
+#     "lastName":"jennifer",
+#     "jituEmail":"sammy.jennifer@thejitu.com",
+#     "userCohort":"2",
+#     "password":"12345678"
+# }
+
+# {
+#     "firstName":"Jenzz",
+#     "lastName":"Samyyy",
+#     "jituEmail":"jenfer.samy@thejitu.com",
+#     "userCohort":"1",
+#     "password":"12345678"
+# }
 
 ###Login user
 POST http://localhost:9000/user/login
@@ -19,3 +35,18 @@ Content-Type: application/json
 "jituEmail":"jennifer.sammy@thejitu.com",
     "password":"12345678"
 } 
+
+###
+PUT http://localhost:9000/user/update/6fd13f31-b95b-4428-a1b9-be240d4ca23b
+Content-Type: application/json
+
+{
+    "firstName":"Jenniferr",
+    "lastName":"Sammyy",
+    "jituEmail":"jenfer.samy@thejitu.com",
+    "userCohort":"2"
+
+}
+
+###
+DELETE  http://localhost:9000/user/delete/d59d8490-d543-43d9-a2f7-15179242bbb0
