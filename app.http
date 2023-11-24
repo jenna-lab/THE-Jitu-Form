@@ -7,7 +7,7 @@ Content-Type: application/json
     "firstName":"Jennifer",
     "lastName":"Sammy",
     "jituEmail":"jennifer.sammy@thejitu.com",
-    "userCohort":"17",
+    "userCohort":"1",
     "password":"12345678"
 }
 

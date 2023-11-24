@@ -2,7 +2,7 @@ import * as joi from "joi";
 
 const userLoginSchema = joi.object({
   jituEmail: joi.string().required().min(5).max(20).messages({
-    "username.empty": "Please Input Your userName with length 5 to 20",
+    "string.max": "Please Input Your userName with length 5 to 20",
   }),
   password: joi.string().required().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
 });
