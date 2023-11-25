@@ -11,8 +11,8 @@ import {
 } from "../controllers/userController";
 
 describe("User Controller Tests", () => {
-  let req: any;
-  let res: any;
+  let req:any;
+  let res:any;
 
   beforeEach(() => {
     req = {
