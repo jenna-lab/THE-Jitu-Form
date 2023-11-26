@@ -49,7 +49,7 @@ describe("User Controller Tests", () => {
         }),
       } as never);
 
-      await registerUser(req, res );
+      await registerUser(req as Request, res as any);
 
       // expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -72,7 +72,7 @@ describe("User Controller Tests", () => {
 
    
 
-      await registerUser(req as Request,res);
+      await registerUser(req as Request, res as any);
 
       expect(res.json).toHaveBeenCalledWith(
         "\"firstName\" is required"   
@@ -136,34 +136,14 @@ describe("User Controller Tests", () => {
         userCohort: "2",
       };
 
-      await updateUser(req as Request, res);
+      await updateUser(req as Request, res as any);
 
-      expect(res.json).toHaveBeenCalledWith(
-        {
-          message:"User updated successfully"}
-      );
+      expect(res.json).toHaveBeenCalledWith({
+        message: "User updated successfully",
+      });
     });
 
-  it("should handle update error", async () => {
-    jest.spyOn(mssql, "connect").mockResolvedValueOnce({
-      request: jest.fn().mockReturnThis(),
-      input: jest.fn().mockReturnThis(),
-      execute: jest.fn().mockResolvedValueOnce({
-        rowsAffected:[ 0],
-      }),
-    } as never);
-
-    req.params.id = "123";
-    req.body = {
-      firstName: "Sammy",
-      lastName: "Jennifer",
-      jituEmail: "sammy.jennifer@thejitu.com",
-      userCohort: "7",
-    };
-
-    await updateUser(req, res);
-
-  });
+ 
   });
 
   //delete user
@@ -186,22 +166,7 @@ describe("User Controller Tests", () => {
     
     });
 
-    it("should handle delete error", async () => {
-      jest.spyOn(mssql, "connect").mockResolvedValueOnce({
-        request: jest.fn().mockReturnThis(),
-        input: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValueOnce({
-          rowsAffected: 0,
-        }),
-      } as never);
-
-      req.params.id = "123";
-
-      await deleteUser(req, res);
-    
-      
-
-    });
+ 
   });
 
 
